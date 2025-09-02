@@ -1,0 +1,221 @@
+/* App.css — responsive, breathing layout
+   - Form width grows/shrinks with viewport
+   - Consistent padding around the card on all screens
+   - Keep your Space Grotesk import and original vibe
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+
+:root{
+  --font: 'Space Grotesk', sans-serif;
+  --page-padding: clamp(18px, 4vw, 64px); /* keeps space on all sides */
+  --card-min: 320px;             /* smallest card width */
+  --card-preferred: 60vw;        /* relative size */
+  --card-max: 500px;             /* largest card width */
+  --bg-speed: 8s;
+
+  --accent-1: #667eea;
+  --accent-2: #764ba2;
+  --muted: #9CA3AF;
+}
+
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* allow scrolling on tiny screens while keeping the centered look */
+  overflow-y: auto;
+  background: #0f1724; /* fallback while gradient animates on .App */
+}
+
+/* Root app container:
+   - padding provides consistent space around card
+   - min-height ensures centering works even with small viewports
+*/
+.App {
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--page-padding);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #f093fb 50%,
+    #f5576c 75%,
+    #4facfe 100%);
+  background-size: 400% 400%;
+  animation: gradientShift var(--bg-speed) ease infinite;
+}
+
+/* floating orbs for depth */
+.App::before, .App::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  z-index: 0;
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.App::before{
+  width: 420px;
+  height: 420px;
+  top: -180px;
+  right: -160px;
+  transform: rotate(12deg);
+  opacity: 0.85;
+}
+.App::after{
+  width: 260px;
+  height: 260px;
+  bottom: -120px;
+  left: -100px;
+  transform: rotate(-8deg);
+  opacity: 0.8;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* The form card:
+   - `width` uses clamp so it grows/shrinks naturally
+   - padding uses clamp to remain comfortable across sizes
+*/
+.form-card{
+  width: clamp(var(--card-min), var(--card-preferred), var(--card-max));
+  max-width: calc(100% - (var(--page-padding) * 2));
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(18px);
+  border-radius: 20px;
+  padding: clamp(20px, 3.5vw, 40px);
+  box-shadow:
+    0 22px 46px rgba(2,6,23,0.18),
+    0 4px 12px rgba(2,6,23,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  z-index: 1;
+  transition: transform 240ms ease, box-shadow 240ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Heading */
+h1 {
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  text-align: center;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* small subtitle under the title */
+h1::after{
+  content: "Predict like never before";
+  display:block;
+  font-size: 0.95rem;
+  color: rgba(16,24,40,0.6);
+  font-weight: 500;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Form layout: stacked vertical inputs for reliability across sizes */
+form{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Inputs */
+input {
+  padding: clamp(12px, 2.4vw, 16px);
+  border-radius: 12px;
+  border: 1px solid rgba(156,163,175,0.6);
+  font-size: clamp(14px, 2vw, 16px);
+  background: rgba(255,255,255,0.98);
+  outline: none;
+  transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+  width: 100%;
+  box-shadow: inset 0 -6px 14px rgba(0,0,0,0.04);
+}
+
+/* placeholder and focus */
+input::placeholder{ color: var(--muted); font-weight: 400; }
+input:focus{
+  border-color: var(--accent-1);
+  box-shadow: 0 8px 28px rgba(102,126,234,0.12);
+  transform: translateY(-2px);
+}
+
+/* Button */
+button{
+  padding: clamp(12px, 2.6vw, 18px);
+  border-radius: 12px;
+  border: none;
+  font-size: clamp(15px, 2.2vw, 18px);
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+button:hover{ transform: translateY(-4px); box-shadow: 0 18px 42px rgba(102,126,234,0.22); }
+button:disabled{ opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Result / Error boxes */
+.result, .error{
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* success */
+.result{
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+/* error */
+.error{
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+}
+
+/* Responsive tweaks — keep breathing room on small screens */
+@media (max-width: 880px) {
+  :root { --page-padding: clamp(14px, 5.2vw, 48px); }
+  .form-card { padding: clamp(16px, 4vw, 32px); }
+}
+
+/* Extra small screens: ensure card isn't too tall and allow page scroll */
+@media (max-height: 560px) {
+  .App { align-items: flex-start; padding-top: calc(var(--page-padding) * 0.8); padding-bottom: calc(var(--page-padding) * 0.8); }
+}
+
+/* Accessibility focus ring */
+input:focus, button:focus { box-shadow: 0 0 0 4px rgba(102,126,234,0.12); }
+
+/* Utility: keeps the form nice when keyboard (mobile) appears */
+@supports (height: 1dvh) {
+  /* on modern mobile browsers prefer dynamic viewport units */
+  .App { min-height: 100dvh; }
+}
