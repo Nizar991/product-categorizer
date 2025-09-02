@@ -104,7 +104,7 @@ print("Model, tokenizer, and label encoder loaded successfully!")
 # ---------- Strapi config ----------
 # STRAPI_URL = "http://localhost:1337/api/products"
 STRAPI_URL = "http://strapi:1337/api/products"
-STRAPI_API_TOKEN = "4749e82118ee74fdc45d247f986b494e12b2dc5651d79c864ad9ef24a60e92582cf47ddbea2255fc2b264e2ceb6e28892c49f40b952e0f784f53edcd04c2d34f678651b3ec47c488b372c29726f6dec05714ef2314c2d5b48a39149aae7d995471162d105ffed9d054ee594c85e21b0247444ea83961f227720030c22968c253"
+STRAPI_API_TOKEN = "ENTER THE API URL" #put your api token url here
 
 # ---------- FastAPI endpoint ----------
 @app.post("/predict_category")
