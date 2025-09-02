@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  # FastAPI backend
+  fastapi:
+    build: ./backend
+    container_name: fastapi_app
+    env_file:
+      - .env
+    ports:
+      - "${FASTAPI_PORT}:8002"   # host:container
+    depends_on:
+      - strapi
+
+  # Strapi backend
+  # strapi:
+  #   build: ./strapi/my-strapi-app
+  #   container_name: strapi_app
+  #   ports:
+  #     - "${STRAPI_PORT}:1337"
+  #   volumes:
+  #     - ./strapi/my-strapi-app:/app
+  #   environment:
+  #     NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+  strapi:
+    build: ./strapi/my-strapi-app
+    container_name: strapi_app
+    ports:
+      - "${STRAPI_PORT}:1337"
+    env_file:
+    - ./strapi/my-strapi-app/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: '0'
+    command: npm run develop
+
+  # React frontend
+  frontend:
+    build: ./frontend/product-predictor
+    container_name: frontend_app
+    env_file:
+      - .env
+    ports:
+      - "${FRONTEND_PORT}:3000"  # host:container
+    depends_on:
+      - fastapi
+      - strapi
+
+  # n8n automation
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n_app
+    env_file:
+      - .env
+    ports:
+      - "${N8N_PORT}:5678"   # host:container
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - fastapi
+      - strapi
+
+volumes:
+  n8n_data:
